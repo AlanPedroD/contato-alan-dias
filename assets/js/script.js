@@ -6,6 +6,58 @@ const nextBtns = document.querySelectorAll(".next");
 const prevBtns = document.querySelectorAll(".prev");
 const progress = document.querySelector(".progress");
 
+// ======================
+// TELEFONE (MÁSCARA + VALIDAÇÃO)
+// ======================
+const telefoneInput = document.getElementById("telefone");
+const telefoneErro = document.getElementById("telefoneErro");
+
+// máscara enquanto digita
+telefoneInput.addEventListener("input", () => {
+  let valor = telefoneInput.value.replace(/\D/g, "");
+
+  if (valor.length > 11) valor = valor.slice(0, 11);
+
+  // aplica máscara
+  if (valor.length > 10) {
+    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2");
+    valor = valor.replace(/(\d{5})(\d)/, "$1-$2");
+  } else {
+    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2");
+    valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
+  }
+
+  telefoneInput.value = valor;
+});
+
+// validação ao sair do campo (UX melhor)
+telefoneInput.addEventListener("blur", () => {
+  validarTelefone();
+});
+
+function validarTelefone() {
+  const numeros = telefoneInput.value.replace(/\D/g, "");
+
+  telefoneInput.classList.remove("input-error");
+  telefoneErro.classList.remove("show");
+
+  if (!numeros) {
+    telefoneErro.textContent = "Informe seu telefone.";
+    telefoneInput.classList.add("input-error");
+    telefoneErro.classList.add("show");
+    return false;
+  }
+
+  if (numeros.length !== 11) {
+    telefoneErro.textContent = "Digite um celular válido com 11 dígitos (DDD + número).";
+    telefoneInput.classList.add("input-error");
+    telefoneErro.classList.add("show");
+    return false;
+  }
+
+  return true;
+}
+
 let currentStep = 0;
 
 function updateSteps() {
@@ -37,6 +89,13 @@ nextBtns.forEach(btn => {
         if (!checked) valid = false;
       }
     });
+
+    // 🔥 VALIDAÇÃO EXTRA DO TELEFONE
+    if (currentStep === 1) { // etapa do telefone
+      if (!validarTelefone()) {
+        valid = false;
+      }
+    }
 
     if (!valid) return;
 
@@ -89,8 +148,8 @@ form.addEventListener("submit", async function(e) {
     valid = false;
   }
 
-  if (!telefone.value.trim()) {
-    telefone.classList.add("input-error");
+  // valida telefone corretamente
+  if (!validarTelefone()) {
     valid = false;
   }
 
