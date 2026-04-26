@@ -241,8 +241,8 @@ button:hover {
 }
 
 .options input[type="radio"]:checked {
-  border-color: green;
-  background: #202A44;
+  border-color: #FB9C09;
+  background: #FF8408;
   box-shadow: inset 0 0 0 3.5px var(--bg-card);
 }
 
