@@ -228,6 +228,30 @@ body::after {
   margin-bottom: 4px;
 }
 
+/* Input error state */
+.step input.input-error,
+.step textarea.input-error {
+  border-color: rgba(224, 123, 106, 0.7);
+  background: rgba(224, 123, 106, 0.05);
+  animation: shake 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-6px); }
+  35%  { transform: translateX(5px); }
+  55%  { transform: translateX(-4px); }
+  75%  { transform: translateX(3px); }
+  90%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Options error state */
+.options.options-error label {
+  border-color: rgba(224, 123, 106, 0.45);
+  animation: shake 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
 /* ─── RADIO OPTIONS ─────────────────────────────── */
 
 .options {

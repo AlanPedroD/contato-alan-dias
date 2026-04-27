@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeModal = document.getElementById('closeModal');
   const telefoneInput = document.getElementById('telefone');
   const telefoneErro = document.getElementById('telefoneErro');
+  const nomeErro = document.getElementById('nomeErro');
+  const motivoErro = document.getElementById('motivoErro');
 
   let current = 0;
   const total = steps.length;
@@ -61,13 +63,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ─── VALIDATION ─────────────────────────────── */
 
+  function triggerError(el) {
+    el.classList.remove('input-error');
+    void el.offsetWidth;
+    el.classList.add('input-error');
+    el.addEventListener('input', () => el.classList.remove('input-error'), { once: true });
+  }
+
   function validateStep(index) {
     if (index === 0) {
       const nome = document.getElementById('nome');
       if (!nome.value.trim()) {
+        nomeErro.textContent = 'Por favor, informe o seu nome.';
+        triggerError(nome);
+        nome.addEventListener('input', () => { nomeErro.textContent = ''; }, { once: true });
         nome.focus();
         return false;
       }
+      nomeErro.textContent = '';
     }
 
     if (index === 1) {
@@ -75,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const regex = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
       if (!regex.test(tel)) {
         telefoneErro.textContent = 'Informe um número de WhatsApp válido.';
+        triggerError(telefoneInput);
         telefoneInput.focus();
         return false;
       }
@@ -84,13 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (index === 2) {
       const selected = form.querySelector('input[name="motivo"]:checked');
       if (!selected) {
-        const firstOption = form.querySelector('input[name="motivo"]');
-        if (firstOption) firstOption.closest('label').style.outline = '2px solid rgba(196,157,82,0.5)';
-        setTimeout(() => {
-          form.querySelectorAll('.options label').forEach(l => l.style.outline = '');
-        }, 800);
+        motivoErro.textContent = 'Selecione um motivo para continuar.';
+        const optionsEl = form.querySelector('.options');
+        optionsEl.classList.remove('options-error');
+        void optionsEl.offsetWidth;
+        optionsEl.classList.add('options-error');
+        setTimeout(() => optionsEl.classList.remove('options-error'), 600);
         return false;
       }
+      motivoErro.textContent = '';
     }
 
     return true;
@@ -128,9 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.options label').forEach(label => {
     label.addEventListener('click', () => {
-      // Highlight handled by CSS :has(), but for older browsers:
       document.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
       label.classList.add('selected');
+      motivoErro.textContent = '';
     });
   });
 
